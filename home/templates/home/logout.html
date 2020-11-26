@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<h1>Hop</h1>
+{% else %}
+<h1>yes</h1>
+{% endif %}
+
+
+{% endblock %}

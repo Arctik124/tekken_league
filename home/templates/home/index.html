@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="login">
+    {% if user.is_authenticated %}
+    <h1>Welcome {{user.username}}</h1>
+    <h2>Your main is {{user.userprofile.main_char}}</h2>
+    <a href="{% url 'home:logout' %}">Logout</a>
+    {% else %}
+    <a href="login/">Login</a>
+    <a href="registration/">Register</a>
+    </form>
+    {% endif %}
+</div>
+
+<div id="leaderboard">
+    <h2>Leaderboard</h2>
+    <table border="1">
+        <tr>
+            <th>Placement</th>
+            <th>Player Name</th>
+            <th>Rating</th>
+        </tr>
+        {% for instance in leader_list %}
+        <tr>
+            <th> {{ forloop.counter }} </th>
+            <th> {{ instance.user }} </th>
+            <th> {{ instance.rating }} </th>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

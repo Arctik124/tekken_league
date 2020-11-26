@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<div class="container">
+    <h1>Profile</h1>
+    <p>Username: {{ user }}</p>
+
+    <p>Main Character: {{ user.userprofile.main_char }}</p>
+    <p>Rating: {{ user.userprofile.rating }}</p>
+
+</div>
+
+<div id="match_history">
+    <h2>Match History</h2>
+    <table border="1">
+        <tr>
+            <th>Player 1</th>
+            <th>Player 2</th>
+            <th>FT</th>
+            <th>Active</th>
+        </tr>
+        {% for instance in match_history %}
+        <tr>
+            <th> {{ instance.player1 }} ({{instance.player1_score}}) </th>
+            <th> {{ instance.player2 }} ({{instance.player2_score}})  </th>
+            <th> {{ instance.max_score }} </th>
+            {% if instance.active %}
+            <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">In progress!</a></th>
+            {% else %}
+            <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">Finshed</a></th>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        {% for instance in match_history2 %}
+        <tr>
+            <th> {{ instance.player1 }} </th>
+            <th> {{ instance.player2 }} </th>
+            <th> {{ instance.max_score }} </th>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

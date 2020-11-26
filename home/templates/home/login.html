@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div id="login">
+    {% if user.is_authenticated %}
+    <h1>Welcome {{user.username}}</h1>
+    <h2>Your main is {{user.userprofile.main_char}}</h2>
+    <a href="{% url 'home:logout' %}">Logout</a>
+    {% else %}
+    <h1>Login</h1>
+    {% if invalid %}
+    <h2>username or password not correct</h2>
+    {% endif %}
+    <form method="POST" action="{% url 'home:login' %}">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="login">
+        <input type="hidden" value="{{ next }}" name="next">
+    <a href="registration/">Register</a>
+    </form>
+    {% endif %}
+</div>
+
+
+{% endblock %}

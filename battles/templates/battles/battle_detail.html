@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Battle Detail</h1>
+<h2>{{object.player1}} {{form.player1_score}} VS {{object.player2}} {{form.player2_score}}</h2>
+<p>First To {{ object.max_score }}</p>
+{% if object.active %}
+<p><a href="{% url 'battles:battle-update-id' id=object.pk %}">Enter results</a></p>
+{% endif %}
+{% endblock %}

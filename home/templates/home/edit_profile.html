@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form method="post" action="{% url 'home:registration' %}">
+        {% csrf_token %}
+        {% if form.errors %}
+        <p>Something is wrong with the input!</p>
+        {% endif %}
+
+        {{form.as_p}}
+        {{profile_form.as_p}}
+        <input type="submit" value="Register">
+    </form>
+{% endblock %}
