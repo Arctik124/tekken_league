@@ -1,9 +1,11 @@
 <nav>
     <ul>
         <li><a href="{% url 'home:index' %}">Home</a></li>
-        <li><a href="{% url 'home:profile' %}">Profile</a></li>
+
         {% if user.is_authenticated %}
+        <li><a href="{% url 'home:profile' %}">Profile</a></li>
         <li><a href="{% url 'battles:create-battle' %}">Create battle</a></li>
         {% endif %}
+
     </ul>
 </nav>

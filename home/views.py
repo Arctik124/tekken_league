@@ -46,7 +46,7 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-    return render(request, 'home/logout.html', {})
+    return redirect('home:index')
 
 
 def registration(request):

@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+    {% block title %}
+    <title>Edit Profile</title>
+    {% endblock %}
 {% block content %}
 
     <form method="post" action="{% url 'home:registration' %}">
