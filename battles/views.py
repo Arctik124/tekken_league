@@ -53,6 +53,20 @@ class BattleUpdateView(View):
                 c = int(fill['player2_score'])
                 if a == b or a == c:
                     fill['active'] = False
+                    fill['winner'] = b > c
+
+                    delta = change_mmr([int(fill['player1_score']), int(fill['player2_score'])])
+
+                    fill['delta'] = delta
+
+                    print('delta ->', delta)
+                    p1 = UserProfile.objects.get(user__username=fill['player1'])
+                    p2 = UserProfile.objects.get(user__username=fill['player2'])
+
+                    p1.rating = p1.rating+delta
+                    p2.rating = p2.rating-delta
+                    p1.save()
+                    p2.save()
                 else:
                     fill['active'] = True
                 form = BattleModelForm(fill, instance=obj)
@@ -69,9 +83,7 @@ class BattleCreateView(View):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            # battle = Battle(player1=request.user.userprofile)
             form = BattleModelForm(user_name=request.user.username)
-            # form = BattleModelForm()
             ctx = {'form': form}
             return render(request, self.template_name, ctx)
         else:
@@ -89,24 +101,16 @@ class BattleCreateView(View):
             'player2_score': 0,
             'active': True
         }
-        # battle = Battle(fill)
-        # print(battle)
         form = BattleModelForm(fill)
-
-        print(form)
-        print(form.is_valid())
 
         if form.is_valid():
             form.save()
             return redirect(reverse('home:profile'))
         else:
-            # form = BattleModelForm(fill)
-            # ctx = {'form': form}
             return redirect(reverse('battles:create-battle'))
-            # return render(request, self.template_name, ctx)
 
 
-def change_mmr(p1, p2, score):
+def change_mmr(score):
     # typical win/lose k1
     std_delta = 15
     k1 = 1
@@ -140,6 +144,5 @@ def change_mmr(p1, p2, score):
         k4 = 1
 
     delta = int(std_delta * k1 * k4 * k3)
-    # p1.mmr = p1.mmr + delta
-    # p2.mmr = p2.mmr - delta
+
     return delta

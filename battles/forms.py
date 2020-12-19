@@ -12,18 +12,21 @@ class BattleModelForm(forms.ModelForm):
             'max_score',
             'player1_score',
             'player2_score',
-            'active'
+            'active',
+            'delta',
+            'winner'
         ]
 
-    # def __init__(self, username=None, *args, **kwargs):
     def __init__(self, *args, **kwargs):
-        kwargs_super = {}
-        super(BattleModelForm, self).__init__(*args, **kwargs_super)
-        for key, value in kwargs.items():
-            print("%s == %s" % (key, value))
-            if key == 'user_name':
-                self.fields['player1'].queryset = UserProfile.objects.filter(user__username=value)
-                self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=value)
+
+        if 'user_name' in kwargs:
+            value = kwargs['user_name']
+            del kwargs['user_name']
+            super(BattleModelForm, self).__init__(*args, **kwargs)
+            self.fields['player1'].queryset = UserProfile.objects.filter(user__username=value)
+            self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=value)
+        else:
+            super(BattleModelForm, self).__init__(*args, **kwargs)
 
     def clean_max_score(self):
         max_score = self.cleaned_data.get('max_score')

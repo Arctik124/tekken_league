@@ -21,6 +21,7 @@
             <th>Player 2</th>
             <th>First to</th>
             <th>Active</th>
+            <th>Rating</th>
         </tr>
         {% for instance in match_history %}
         <tr>
@@ -28,10 +29,25 @@
             <th> {{ instance.player2 }} ({{instance.player2_score}})  </th>
             <th> {{ instance.max_score }} </th>
             {% if instance.active %}
-            <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">In progress!</a></th>
+                <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">In progress!</a></th>
             {% else %}
-            <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">Finshed</a></th>
+                <th><a href="{% url 'battles:battle-detail-id' id=instance.pk %}">Finshed</a></th>
             {% endif %}
+
+            {% if not instance.active %}
+
+                {% if instance.player1_score > instance.player2_score %}
+                    <th style="color:green"> +{{ instance.delta }}</th>
+                {% else %}
+                    <th style="color:red"> {{ instance.delta }}</th>
+                {% endif %}
+
+                {% else %}
+
+                <th> {{ instance.delta }}</th>
+
+            {% endif %}
+
         </tr>
         {% endfor %}
         {% for instance in match_history2 %}
