@@ -24,6 +24,11 @@
         {% csrf_token %}
         <p> {{form.player1}} VS {{form.player2}}</p>
         <p> First To {{form.max_score}} </p>
+<!--        <div class="fieldWrapper">-->
+<!--            {{ form.max_score.errors }}-->
+<!--            <label for="{{ form.max_score.id_for_label }}">First To:</label>-->
+<!--            {{ form.max_score }}-->
+<!--        </div>-->
         <input type="submit" value="Register Battle!">
     </form>
 

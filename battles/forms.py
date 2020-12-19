@@ -25,10 +25,11 @@ class BattleModelForm(forms.ModelForm):
             super(BattleModelForm, self).__init__(*args, **kwargs)
             self.fields['player1'].queryset = UserProfile.objects.filter(user__username=value)
             self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=value)
+            self.fields['max_score'].widget.attrs['min'] = 2
+
         else:
             super(BattleModelForm, self).__init__(*args, **kwargs)
-
-
+            self.fields['max_score'].widget.attrs['min'] = 2
 
     def clean(self):
         cleaned_data = super().clean()

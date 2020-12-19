@@ -13,9 +13,9 @@ class Battle(models.Model):
                                    on_delete=models.SET('player2'),
                                    related_name="homes_users_related2"
                                    )
-    max_score = models.IntegerField()
-    player1_score = models.IntegerField(default=0, blank=True)
-    player2_score = models.IntegerField(default=0, blank=True)
+    max_score = models.PositiveSmallIntegerField()
+    player1_score = models.PositiveSmallIntegerField(default=0, blank=True)
+    player2_score = models.PositiveSmallIntegerField(default=0, blank=True)
     delta = models.IntegerField(default=0, blank=True)
     winner = models.BooleanField(default=True, blank=True)
     active = models.BooleanField(default=True, blank=True)
