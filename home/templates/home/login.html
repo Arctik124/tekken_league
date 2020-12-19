@@ -22,7 +22,7 @@
         {{form.as_p}}
         <input type="submit" value="login">
         <input type="hidden" value="{{ next }}" name="next">
-    <a href="registration/">Register</a>
+    <a href="{% url 'home:registration' %}">Register</a>
     </form>
     {% endif %}
 </div>
