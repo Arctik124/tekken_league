@@ -64,13 +64,14 @@ def change_mmr(p1, p2, score):
     p2.mmr = p2.mmr - delta
     return abs(delta)
 
-def simulate(p1, p2, size, debug = False):
+
+def simulate(p1, p2, size, debug=False):
     wr = 0
     for i in range(0, size+1):    
         wins = 0
         matches = 0
         ft = int(random.uniform(3,11))
-        while(wins < ft and matches - wins < ft):
+        while wins < ft and matches - wins < ft:
             matches += 1
             wins += p1.play(p2)
         if wins == ft:

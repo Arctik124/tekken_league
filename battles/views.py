@@ -70,7 +70,7 @@ class BattleCreateView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             # battle = Battle(player1=request.user.userprofile)
-            form = BattleModelForm(username=request.user.username)
+            form = BattleModelForm(user_name=request.user.username)
             # form = BattleModelForm()
             ctx = {'form': form}
             return render(request, self.template_name, ctx)

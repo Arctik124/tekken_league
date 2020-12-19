@@ -15,11 +15,15 @@ class BattleModelForm(forms.ModelForm):
             'active'
         ]
 
-    def __init__(self, username=None, *args, **kwargs):
-        super(BattleModelForm, self).__init__(*args, **kwargs)
-#        if username is not None:
-#             self.fields['player1'].queryset = UserProfile.objects.filter(user__username=username)
-#             self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=username)
+    # def __init__(self, username=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        kwargs_super = {}
+        super(BattleModelForm, self).__init__(*args, **kwargs_super)
+        for key, value in kwargs.items():
+            print("%s == %s" % (key, value))
+            if key == 'user_name':
+                self.fields['player1'].queryset = UserProfile.objects.filter(user__username=value)
+                self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=value)
 
     def clean_max_score(self):
         max_score = self.cleaned_data.get('max_score')
@@ -43,7 +47,7 @@ class BattleModelForm(forms.ModelForm):
         print('player2_score', player2_score)
 
         if player1.user.username == player2.user.username:
-            raise forms.ValidationError('Cant fight with yourself!')
+            raise forms.ValidationError('Can\'t fight with yourself!')
         if player1_score > max_score:
             raise forms.ValidationError("Score is bigger than FT")
         if player2_score > max_score:
