@@ -28,13 +28,7 @@ class BattleModelForm(forms.ModelForm):
         else:
             super(BattleModelForm, self).__init__(*args, **kwargs)
 
-    def clean_max_score(self):
-        max_score = self.cleaned_data.get('max_score')
 
-        if max_score <= 1:
-            raise forms.ValidationError('Minimum FT2!')
-        else:
-            return max_score
 
     def clean(self):
         cleaned_data = super().clean()
@@ -49,6 +43,8 @@ class BattleModelForm(forms.ModelForm):
         print('player1_score', player1_score)
         print('player2_score', player2_score)
 
+        if max_score <= 1:
+            raise forms.ValidationError('Minimum FT2!')
         if player1.user.username == player2.user.username:
             raise forms.ValidationError('Can\'t fight with yourself!')
         if player1_score > max_score:
