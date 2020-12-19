@@ -5,7 +5,7 @@
     {% endblock %}
 {% block content %}
 
-    <form method="post" action="{% url 'home:registration' %}">
+    <form method="post" action="{% url 'home:profile_edit' %}">
         {% csrf_token %}
         {% if form.errors %}
         <p>Something is wrong with the input!</p>
@@ -13,6 +13,6 @@
 
         {{form.as_p}}
         {{profile_form.as_p}}
-        <input type="submit" value="Register">
+        <input type="submit" value="Update">
     </form>
 {% endblock %}

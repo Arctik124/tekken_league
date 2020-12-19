@@ -17,6 +17,7 @@ class Battle(models.Model):
     player1_score = models.IntegerField(default=0, blank=True)
     player2_score = models.IntegerField(default=0, blank=True)
     active = models.BooleanField(default=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse('battles:battle-detail-id', kwargs={'id': self.id})

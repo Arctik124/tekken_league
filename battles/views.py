@@ -1,14 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, CreateView, DetailView, UpdateView
+from django.views.generic import View, DetailView
 from django.utils.http import urlencode
 from django.urls import reverse
 from .forms import BattleModelForm
 from .models import Battle
+from home.models import UserProfile
 
 
 class BattleDetailView(DetailView):
-    # queryset = Article.objects.all()
-
     def get_object(self, queryset=None):
         id_ = self.kwargs.get('id')
         return get_object_or_404(Battle, id=id_)
@@ -39,7 +38,6 @@ class BattleUpdateView(View):
         ctx = {}
         obj = self.get_object()
         if obj is not None:
-
             fill = {
                 'player1': obj.player1,
                 'player2': obj.player2,
@@ -71,8 +69,9 @@ class BattleCreateView(View):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            battle = Battle(player1=request.user.userprofile)
-            form = BattleModelForm(instance=battle)
+            # battle = Battle(player1=request.user.userprofile)
+            form = BattleModelForm(username=request.user.username)
+            # form = BattleModelForm()
             ctx = {'form': form}
             return render(request, self.template_name, ctx)
         else:
@@ -80,21 +79,67 @@ class BattleCreateView(View):
             return redirect(loginurl)
 
     def post(self,  request,  *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('home:login'))
         fill = {
-            'player1': request.user.userprofile,
+            'player1':  request.POST['player1'],
             'player2': request.POST['player2'],
             'max_score': request.POST['max_score'],
             'player1_score': 0,
             'player2_score': 0,
+            'active': True
         }
+        # battle = Battle(fill)
+        # print(battle)
         form = BattleModelForm(fill)
+
+        print(form)
+        print(form.is_valid())
 
         if form.is_valid():
             form.save()
             return redirect(reverse('home:profile'))
         else:
-            form = BattleModelForm(fill)
-            ctx = {'form': form}
-            return render(request, self.template_name, ctx)
-        # battle_page_url = reverse('battles:battle-detail-id', kwargs={'id': form.cleaned_data['pk']})
-        # return render(request, self.template_name, ctx)
+            # form = BattleModelForm(fill)
+            # ctx = {'form': form}
+            return redirect(reverse('battles:create-battle'))
+            # return render(request, self.template_name, ctx)
+
+
+def change_mmr(p1, p2, score):
+    # typical win/lose k1
+    std_delta = 15
+    k1 = 1
+    winner = score[0] - score[1] > 0
+    if not winner:
+        k1 = -k1
+
+    # # mmr difference factor k2
+    # max_diff = 500
+    # dif = p1 - p2
+    # if dif > max_diff:
+    #     dif = max_diff
+    # if dif < -max_diff:
+    #     dif = -max_diff
+    # if winner:
+    #     k2 = 1 - (dif / (max_diff * 2))
+    # else:
+    #     k2 = 1 + (dif / (max_diff * 2))
+
+    # ft length factor k3
+    ft_max = 10
+    ft_min = 3
+    ft_len = max(score)
+    k3 = 1 + (ft_len - ft_min) / (ft_max - ft_min) / 10
+
+    # mmr difference factor k4
+    score_dif = abs(score[0] - score[1])
+    if score_dif > 2:
+        k4 = 1 + score_dif / (ft_len * 4)
+    else:
+        k4 = 1
+
+    delta = int(std_delta * k1 * k4 * k3)
+    # p1.mmr = p1.mmr + delta
+    # p2.mmr = p2.mmr - delta
+    return delta

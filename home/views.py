@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.utils.http import urlencode
 from django.urls import reverse
 from .models import UserProfile
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserProfileForm
+from .forms import UserProfileForm, UserUpdateForm
 from django.contrib.auth.models import User
 from battles.models import Battle
 from django.db.models import Q
@@ -81,9 +81,43 @@ def profile_view(request, pk=None):
     else:
         user = request.user
     match_history = Battle.objects.filter(Q(player1=user.userprofile) | Q(player2=user.userprofile))
+    match_history = match_history.order_by('-date_added')
     ctx = {
         'match_history': match_history,
         'user': user
     }
     return render(request, 'home/profile.html', ctx)
 
+
+def edit_profile_view(request):
+    if request.method == 'POST':
+        newusername = request.POST['username']
+        profile_form = UserProfileForm(request.POST)
+        print(request.POST)
+        # print(form.is_valid())
+        users = User.objects.all()
+        check = False
+        for user in users:
+            if user.username == newusername:
+                check = True
+        if ~check and profile_form.is_valid():
+            user = User.objects.get(username=request.user.username)
+            user.username = newusername
+            user_profile = user.userprofile
+            user_profile.main_char = request.POST['main_char']
+            user.save()
+            user_profile.save()
+
+            # profile = profile_form.save(commit=False)
+            # profile.user = user
+            # profile.save()
+            return redirect('home:profile')
+    else:
+        user = request.user
+        form = UserUpdateForm(instance=user)
+        profile_form = UserProfileForm(instance=user.userprofile)
+        ctx = {
+            'form': form,
+            'profile_form': profile_form,
+        }
+        return render(request, 'home/edit_profile.html', ctx)

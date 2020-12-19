@@ -1,5 +1,6 @@
 from django import forms
 from .models import Battle
+from home.models import UserProfile
 
 
 class BattleModelForm(forms.ModelForm):
@@ -13,6 +14,12 @@ class BattleModelForm(forms.ModelForm):
             'player2_score',
             'active'
         ]
+
+    def __init__(self, username=None, *args, **kwargs):
+        super(BattleModelForm, self).__init__(*args, **kwargs)
+#        if username is not None:
+#             self.fields['player1'].queryset = UserProfile.objects.filter(user__username=username)
+#             self.fields['player2'].queryset = UserProfile.objects.exclude(user__username=username)
 
     def clean_max_score(self):
         max_score = self.cleaned_data.get('max_score')
@@ -29,6 +36,11 @@ class BattleModelForm(forms.ModelForm):
         max_score = cleaned_data.get("max_score")
         player2 = cleaned_data.get('player2')
         player1 = cleaned_data.get('player1')
+        print('player1', player1)
+        print('player2', player2)
+        print('max_score', max_score)
+        print('player1_score', player1_score)
+        print('player2_score', player2_score)
 
         if player1.user.username == player2.user.username:
             raise forms.ValidationError('Cant fight with yourself!')

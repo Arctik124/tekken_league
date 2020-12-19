@@ -22,8 +22,7 @@
 {% endif %}
     <form method="post" action=".">
         {% csrf_token %}
-
-        <p> {{user.username}} VS {{form.player2}}</p>
+        <p> {{form.player1}} VS {{form.player2}}</p>
         <p> First To {{form.max_score}} </p>
         <input type="submit" value="Register Battle!">
     </form>
